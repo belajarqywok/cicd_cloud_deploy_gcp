@@ -1,0 +1,48 @@
+# This file configures the Hello World app which serves public web traffic.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-world-demo
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: hello-world-demo
+  template:
+    metadata:
+      labels:
+        app: hello-world-demo
+    spec:
+      containers:
+      - name: hello-world-demo
+        # Update with the path to your image
+        image: gcr.io/...
+        # This app listens on port 8080 for web traffic by default.
+        ports:
+        - containerPort: 8080
+        env:
+          - name: PORT
+            value: "8080"
+        resources:
+            requests:
+              cpu: 100m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+---
+
+# The hello-logging service provides a load-balancing proxy over the hello-logging
+# pods. By specifying the type as a 'LoadBalancer', Kubernetes Engine will
+# create an external HTTP load balancer.
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-world-demo
+spec:
+  type: LoadBalancer
+  selector:
+    app: hello-world-demo
+  ports:
+  - port: 80
+    targetPort: 8080

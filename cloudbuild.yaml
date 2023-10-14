@@ -1,0 +1,17 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/qwiklabs-gcp-03-7154c6c93f6c/helloworld', '.']
+  # Push the container image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/qwiklabs-gcp-03-7154c6c93f6c/helloworld']
+  # Create release in Google Cloud Deploy
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    entrypoint: gcloud
+    args: 
+      [
+        "beta", "deploy", "releases", "create", "rel-${SHORT_SHA}a",
+        "--delivery-pipeline", "helloworld-pipeline",
+        "--region", "us-central1",
+        "--annotations", "commitId=${REVISION_ID}",
+        "--images", "helloworld=gcr.io/qwiklabs-gcp-03-7154c6c93f6c/helloworld"
+      ]

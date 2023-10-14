@@ -1,0 +1,10 @@
+Dockerfile
+readme.md
+node_modules
+*.log
+cloudbuld.yaml
+*.sh
+app.yaml
+package-lock.json
+.gitignore
+loadgenerator
